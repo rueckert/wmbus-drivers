@@ -18,12 +18,20 @@ struct Izar: Driver
     std::map<std::string, double> ret_val{};
 
     uint8_t decrypted[64] = {0};
-
+    
+    //2024 04 27, Rueckert: My meter transmits "total_m3" via the telegram and not total_water_m3
+    if ((this->decrypt(reinterpret_cast<uint8_t*>(telegram.data()), telegram.size(), decrypted)) > 0) {
+      add_to_map(ret_val, "total_m3", this->get_total_m3(decrypted));
+      add_to_map(ret_val, "last_month_total_water_m3", this->get_last_month_total_water_m3(decrypted));
+      add_to_map(ret_val, "current_month_total_water_l", this->get_current_month_total_water_l(decrypted));
+    }
+    /*
     if ((this->decrypt(reinterpret_cast<uint8_t*>(telegram.data()), telegram.size(), decrypted)) > 0) {
       add_to_map(ret_val, "total_water_m3", this->get_total_water_m3(decrypted));
       add_to_map(ret_val, "last_month_total_water_m3", this->get_last_month_total_water_m3(decrypted));
       add_to_map(ret_val, "current_month_total_water_l", this->get_current_month_total_water_l(decrypted));
     }
+    */
 
     add_to_map(ret_val, "transmit_period_s", this->get_transmit_period_s(telegram));
     add_to_map(ret_val, "remaining_battery_life_y", this->get_remaining_battery_life_y(telegram));
