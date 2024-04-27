@@ -77,11 +77,19 @@ private:
     return ret_val;
   };
 
+  //2024 04 27, Rueckert: My meter transmits "total_m3" via the telegram and not total_water_m3
+  esphome::optional<double> get_total_m3(uint8_t *decrypted) {
+    esphome::optional<double> ret_val{};
+    ret_val = (this->uintFromBytesLittleEndian(decrypted + 1)) / 1000.0;
+    return ret_val;
+  };
+  /*
   esphome::optional<double> get_total_water_m3(uint8_t *decrypted) {
     esphome::optional<double> ret_val{};
     ret_val = (this->uintFromBytesLittleEndian(decrypted + 1)) / 1000.0;
     return ret_val;
   };
+  */
 
   esphome::optional<double> get_last_month_total_water_m3(uint8_t *decrypted) {
     esphome::optional<double> ret_val{};
